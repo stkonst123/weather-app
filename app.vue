@@ -5,74 +5,13 @@ const dateRange = useState("dateRange", () => ref({ from: "2020/07/08", to: "202
 
 const proxyDateRange = useState("proxyDateRange", () => ref({ from: "2020/07/08", to: "2020/07/17" }));
 
-const items = [
+const locations = useState("items", () => items)
+const series = useState("series", () => [
   {
-    id: 2950159,
-    name: "Berlin",
-    latitude: 52.52437,
-    longitude: 13.41053,
-    population: 3426354,
-    postcodes: {
-      0: "10967",
-      1: "13347",
-    },
-    country: "Germany",
+    name: "T, " + temperatureData.hourly_units.temperature_2m,
+    data: temperatureData.hourly.temperature_2m,
   },
-  {
-    id: 2950149,
-    name: "Berlino",
-    latitude: 52.9,
-    longitude: 1.41053,
-    population: 46354,
-    postcodes: {
-      0: "10967",
-    },
-    country: "Austria",
-  },
-  {
-    id: 2960159,
-    name: "My Berlin",
-    latitude: 43.52437,
-    longitude: 23.41053,
-    population: 5427754,
-    postcodes: {
-      0: "10967",
-      1: "13347",
-      2: "13447",
-      4: "145447",
-    },
-    country: "US",
-  },
-  {
-    id: 29159,
-    name: "Berlin",
-    latitude: 52.52437,
-    longitude: 103.41053,
-    population: 1426332,
-    postcodes: {
-      0: "10967",
-    },
-    country: "Japan",
-  },
-  {
-    id: 21159,
-    name: "Berlinnium",
-    latitude: 2.52437,
-    longitude: 3.41053,
-    population: 2006354,
-    postcodes: {
-      0: "10967",
-    },
-    country: "Russia",
-  },
-];
-
-const series = [
-  {
-    name: "Desktops",
-    data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
-  },
-];
+]);
 
 const chartOptions = {
   chart: {
@@ -86,11 +25,12 @@ const chartOptions = {
     enabled: false,
   },
   stroke: {
-    curve: "straight",
+    curve: "monotoneCubic",
+    width: 3,
   },
   title: {
     text: "Product Trends by Month",
-    align: "left",
+    align: "center",
   },
   grid: {
     row: {
@@ -99,7 +39,10 @@ const chartOptions = {
     },
   },
   xaxis: {
-    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+    categories: temperatureData.hourly.time,
+    labels: {
+      show: false,
+    },
   },
 };
 
@@ -127,7 +70,7 @@ function save() {
 
   <button @click="getLocationsByTemplate">Search {{ locationTemplate }}</button> -->
 
-  <div class="row" style="height: 100vh; justify-content: center; align-items: center">
+  <div class="row" style="height: 100vh; justify-content: center; align-items: center; overflow-x: hidden">
     <div class="row col-12" style="padding: 10px; min-width: 350px; max-width: 900px">
       <q-input
         class="col-12"
@@ -148,7 +91,7 @@ function save() {
       <div class="col-xs-12 col-sm-4 col-md-3">
         <q-scroll-area class="cards-container">
           <q-list>
-            <q-item v-for="item in items" :key="item.id" class="location-card">
+            <q-item v-for="item in locations" :key="item.id" class="location-card">
               <q-item-section>
                 <q-item-label>{{ item.name }}, {{ item.country }}</q-item-label>
                 <q-item-label caption style="margin-bottom: 3px">Population: {{ item.population }}</q-item-label>
@@ -162,8 +105,6 @@ function save() {
                 <q-icon name="star" color="primary" />
               </q-item-section> -->
             </q-item>
-
-            <q-separator spaced inset />
           </q-list>
           <!-- <q-card v-for="item in items" :key="item.id" class="location-card">
             <q-card-section flat class="bg-grey text-white">
@@ -229,7 +170,7 @@ function save() {
 
 <style>
 .cards-container {
-  height: 100%;
+  height: 400px;
 }
 
 .location-card {
@@ -239,7 +180,7 @@ function save() {
 }
 
 .location-card:hover {
-  background-color: rgba(30, 143, 255, 0.181);
+  background-color: #f3f3f3;
 }
 
 .map-container {
@@ -250,7 +191,7 @@ function save() {
 
 @media (width <= 600px) {
   .cards-container {
-    height: 150px;
+    max-height: 150px;
   }
 
   .location-card {
