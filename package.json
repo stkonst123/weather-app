@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.11",
+    "apexcharts": "^3.48.0",
     "nuxt": "^3.11.2",
     "quasar": "^2.15.2",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue3-apexcharts": "^1.5.2"
   },
   "devDependencies": {
-    "nuxt-quasar-ui": "^2.0.8"
+    "nuxt-quasar-ui": "^2.0.8",
+    "sass": "^1.74.1"
   }
 }
