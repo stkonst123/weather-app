@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const locationTemplate = useState("locationTemplate", () => "");
 const selectedLocation = useState("selectedLocation", () => null);
-const dateRange = useState("dateRange", () => ref({ from: "2020/07/08", to: "2020/07/17" }));
-// const locations = useState("locations", () => []);
+const dateRange = useState("dateRange", () => null);
+const proxyDateRange = useState("proxyDateRange", () => null);
 
-const proxyDateRange = useState("proxyDateRange", () => ref({ from: "2020/07/08", to: "2020/07/17" }));
+// const locations = useState("locations", () => []);
 
 const locations = useState("items", () => items);
 const series = useState("series", () => [
@@ -29,10 +29,10 @@ const chartOptions = {
     curve: "monotoneCubic",
     width: 3,
   },
-  title: {
-    text: "Product Trends by Month",
-    align: "center",
-  },
+  // title: {
+  //   text: "Product Trends by Month",
+  //   align: "center",
+  // },
   grid: {
     row: {
       colors: ["#f3f3f3", "transparent"],
@@ -48,11 +48,11 @@ const chartOptions = {
 };
 
 function updateProxy() {
-  proxyDateRange.value = { ...dateRange.value };
+  proxyDateRange.value = dateRange.value;
 }
 
 function save() {
-  dateRange.value = { ...proxyDateRange.value };
+  dateRange.value = proxyDateRange.value;
 }
 
 // const getLocationsByTemplate = () => {
@@ -105,38 +105,30 @@ watch(selectedLocation, () => console.log(selectedLocation.value));
                   <q-badge v-for="code in item.postcodes" :key="code" outline color="orange">{{ code }}</q-badge>
                 </div>
               </q-item-section>
-
-              <!-- <q-item-section side top>
-                <q-item-label caption>5 min ago</q-item-label>
-                <q-icon name="star" color="primary" />
-              </q-item-section> -->
             </q-item>
           </q-list>
-          <!-- <q-card v-for="item in items" :key="item.id" class="location-card">
-            <q-card-section flat class="bg-grey text-white">
-              <div class="text-h6">{{ item.name }}</div>
-              <div class="text-subtitle2">{{ item.country }}</div>
-            </q-card-section>
-
-            <q-separator />
-
-            <q-card-actions align="right">
-              <q-btn flat>Action 1</q-btn>
-              <q-btn flat>Action 2</q-btn>
-            </q-card-actions>
-          </q-card> -->
         </q-scroll-area>
       </div>
 
       <div class="col-xs-12 col-sm-8 col-md-9">
         <div class="map-container">
-          <div style="width: 100%; height: 100%; background-color: purple"></div>
+          <div style="width: 100%; height: 100%; background-color: purple">
+            <h1 style="padding: 0; margin: 0">Map view</h1>
+          </div>
         </div>
       </div>
 
-      <q-separator style="width: 100%; margin: 5px 0" />
+      <q-separator v-if="selectedLocation" style="width: 100%; margin: 5px 0" />
 
-      <q-btn class="col-12" icon="event" flat color="primary" align="between" style="height: 50px">
+      <q-btn
+        v-if="selectedLocation"
+        class="col-12 date-selection-button"
+        flat
+        icon="event"
+        color="primary"
+        align="center"
+        size="22px"
+      >
         <q-popup-proxy @before-show="updateProxy" transition-show="fade" transition-hide="fade">
           <q-date range v-model="proxyDateRange">
             <div class="row items-center justify-end q-gutter-sm">
@@ -145,14 +137,29 @@ watch(selectedLocation, () => console.log(selectedLocation.value));
             </div>
           </q-date>
         </q-popup-proxy>
-        <div class="text-center">
-          {{ dateRange }}
+        <div v-if="dateRange" class="text-h5">
+          <span class="text-caption">From </span>
+          {{ dateRange.from }}
+          <span class="text-caption">to </span>
+          {{ dateRange.to }}
         </div>
       </q-btn>
 
-      <ClientOnly>
+      <ClientOnly v-if="dateRange">
         <div class="col-12" id="chart">
-          <apexchart type="line" height="350" :options="chartOptions" :series="series"></apexchart>
+          <apexchart
+            type="line"
+            height="350"
+            :options="{
+              ...chartOptions,
+              title: {
+                text: `${selectedLocation.name}, ${selectedLocation.country}`,
+                align: 'center',
+                style: { fontSize: 18 },
+              },
+            }"
+            :series="series"
+          ></apexchart>
         </div>
       </ClientOnly>
     </div>
@@ -200,6 +207,10 @@ watch(selectedLocation, () => console.log(selectedLocation.value));
   padding-left: 10px;
 }
 
+.date-selection-button {
+  margin-bottom: 10px;
+}
+
 @media (width <= 600px) {
   .cards-container {
     max-height: 150px;
@@ -207,7 +218,7 @@ watch(selectedLocation, () => console.log(selectedLocation.value));
 
   .map-container {
     padding-left: 0;
-    height: 250px;
+    height: 230px;
   }
 }
 </style>
