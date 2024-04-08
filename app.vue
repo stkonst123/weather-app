@@ -1,11 +1,12 @@
 <script setup lang="ts">
 const locationTemplate = useState("locationTemplate", () => "");
+const selectedLocation = useState("selectedLocation", () => null);
 const dateRange = useState("dateRange", () => ref({ from: "2020/07/08", to: "2020/07/17" }));
 // const locations = useState("locations", () => []);
 
 const proxyDateRange = useState("proxyDateRange", () => ref({ from: "2020/07/08", to: "2020/07/17" }));
 
-const locations = useState("items", () => items)
+const locations = useState("items", () => items);
 const series = useState("series", () => [
   {
     name: "T, " + temperatureData.hourly_units.temperature_2m,
@@ -62,7 +63,7 @@ function save() {
 //   });
 // };
 
-// watch(locations, () => console.log(locations.value));
+watch(selectedLocation, () => console.log(selectedLocation.value));
 </script>
 
 <template>
@@ -91,8 +92,13 @@ function save() {
       <div class="col-xs-12 col-sm-4 col-md-3">
         <q-scroll-area class="cards-container">
           <q-list>
-            <q-item v-for="item in locations" :key="item.id" class="location-card">
-              <q-item-section>
+            <q-item
+              v-for="item in locations"
+              :key="item.id"
+              class="location-card"
+              :class="selectedLocation?.id === item?.id && 'selected-card'"
+            >
+              <q-item-section @click="selectedLocation = item">
                 <q-item-label>{{ item.name }}, {{ item.country }}</q-item-label>
                 <q-item-label caption style="margin-bottom: 3px">Population: {{ item.population }}</q-item-label>
                 <div class="q-gutter-xs">
@@ -183,6 +189,11 @@ function save() {
   background-color: #f3f3f3;
 }
 
+.selected-card,
+.selected-card:hover {
+  background-color: beige;
+}
+
 .map-container {
   height: 400px;
   width: 100%;
@@ -192,10 +203,6 @@ function save() {
 @media (width <= 600px) {
   .cards-container {
     max-height: 150px;
-  }
-
-  .location-card {
-    margin: 0 10px;
   }
 
   .map-container {
