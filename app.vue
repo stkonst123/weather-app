@@ -1,44 +1,9 @@
 <script setup lang="ts">
-const locationTemplate = useState<string | undefined | null>("locationTemplate");
-const locationTemplateTmp = useState<string | undefined | null>("locationTemplateTmp");
-const dateRange = useState("dateRange");
-const proxyDateRange = useState("proxyDateRange");
-const selectedLocation = useState("selectedLocation");
-
-const series = useState("series", () => [
-  {
-    name: "T, " + temperatureData.hourly_units.temperature_2m,
-    data: temperatureData.hourly.temperature_2m,
-  },
-]);
-const chartOptions = {
-  chart: {
-    height: 350,
-    type: "line",
-    zoom: {
-      enabled: false,
-    },
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  stroke: {
-    curve: "monotoneCubic",
-    width: 3,
-  },
-  grid: {
-    row: {
-      colors: ["#f3f3f3", "transparent"],
-      opacity: 0.5,
-    },
-  },
-  xaxis: {
-    categories: temperatureData.hourly.time,
-    labels: {
-      show: false,
-    },
-  },
-};
+const locationTemplate = useState<string | null>("locationTemplate", () => null);
+const locationTemplateTmp = useState<string | null>("locationTemplateTmp", () => null);
+const selectedLocation = useState<LocationData | null>("selectedLocation");
+const dateRange = useState<DataRange | null>("dateRange", () => null);
+const proxyDateRange = useState<DataRange | null>("proxyDateRange", () => null);
 
 function updateProxyDateRange() {
   proxyDateRange.value = dateRange.value;
@@ -109,23 +74,7 @@ function clearLocationTemplate() {
         </div>
       </q-btn>
 
-      <ClientOnly v-if="dateRange">
-        <div class="col-12" id="chart">
-          <apexchart
-            type="line"
-            height="350"
-            :options="{
-              ...chartOptions,
-              title: {
-                text: `${selectedLocation.name}, ${selectedLocation.country}`,
-                align: 'center',
-                style: { fontSize: 18 },
-              },
-            }"
-            :series="series"
-          ></apexchart>
-        </div>
-      </ClientOnly>
+      <TemperatureView v-if="dateRange" :selectedLocation="selectedLocation" />
     </div>
   </div>
 

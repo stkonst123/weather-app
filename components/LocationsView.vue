@@ -4,8 +4,10 @@ const props = defineProps({
 });
 const emit = defineEmits(["response"]);
 
-const selectedLocation = useState("selectedLocation");
+const selectedLocation = useState<LocationData | null>("selectedLocation", () => null);
 const locationTemplate = useState("locationTemplate", () => props.locationTemplate);
+const latitude = useState<number | null>("latitude", () => null);
+const longitude = useState<number | null>("longitude", () => null);
 
 const { data: locations } = await useLazyFetch("https://geocoding-api.open-meteo.com/v1/search", {
   query: {
@@ -14,8 +16,13 @@ const { data: locations } = await useLazyFetch("https://geocoding-api.open-meteo
     language: "en",
     format: "json",
   },
-  transform: (resp: any) => toRaw(resp).results,
+  transform: (resp: any) => toRaw(resp).results as LocationData[],
   watch: [locationTemplate],
+});
+
+watch(selectedLocation, () => {
+  latitude.value = selectedLocation.value ? selectedLocation.value.latitude : null;
+  longitude.value = selectedLocation.value ? selectedLocation.value.longitude : null;
 });
 
 emit("response", selectedLocation);
@@ -32,11 +39,16 @@ emit("response", selectedLocation);
           :class="selectedLocation?.id === item?.id && 'selected-card'"
         >
           <q-item-section @click="selectedLocation = item">
-            <q-item-label>{{ item.name }}, {{ item.country }}</q-item-label>
-            <q-item-label caption style="margin-bottom: 3px">Population: {{ item.population }}</q-item-label>
-            <div class="q-gutter-xs">
+            <q-item-label
+              ><span class="text-weight-bolder">{{ item.name }}</span
+              >, {{ item.country }}</q-item-label
+            >
+            <q-item-label v-if="item.population" caption style="margin-bottom: 3px"
+              >Population: {{ item.population }}</q-item-label
+            >
+            <!-- <div class="q-gutter-xs">
               <q-badge v-for="code in item.postcodes" :key="code" outline color="orange">{{ code }}</q-badge>
-            </div>
+            </div> -->
           </q-item-section>
         </q-item>
       </q-list>
@@ -47,6 +59,10 @@ emit("response", selectedLocation);
     <div class="map-container">
       <div style="width: 100%; height: 100%; background-color: purple">
         <h2 style="padding: 0; margin: 0">Map view is under development</h2>
+
+        <div v-if="selectedLocation" class="temperature-container">
+          <CurrentTemperature />
+        </div>
       </div>
     </div>
   </div>
@@ -69,13 +85,20 @@ emit("response", selectedLocation);
 
 .selected-card,
 .selected-card:hover {
-  background-color: beige;
+  background-color: orange;
 }
 
 .map-container {
   height: 400px;
   width: 100%;
   padding-left: 10px;
+  position: relative;
+}
+
+.temperature-container {
+  position: absolute;
+  top: 50px;
+  right: 50px;
 }
 
 @media (width <= 600px) {
@@ -86,6 +109,11 @@ emit("response", selectedLocation);
   .map-container {
     padding-left: 0;
     height: 230px;
+  }
+
+  .temperature-container {
+    top: 20px;
+    right: 20px;
   }
 }
 </style>
