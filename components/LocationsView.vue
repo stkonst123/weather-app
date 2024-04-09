@@ -1,25 +1,24 @@
 <script setup lang="ts">
-const locationTemplate = defineProps({
-  value: String,
+const props = defineProps({
+  locationTemplate: String,
 });
+const emit = defineEmits(["response"]);
 
-const {
-  data: locations,
-  error,
-  execute,
-  pending,
-  status,
-  refresh,
-} = await useLazyFetch("https://geocoding-api.open-meteo.com/v1/search", {
-  // @ts-ignore
+const selectedLocation = useState("selectedLocation");
+const locationTemplate = useState("locationTemplate", () => props.locationTemplate);
+
+const { data: locations } = await useLazyFetch("https://geocoding-api.open-meteo.com/v1/search", {
   query: {
-    name: locationTemplate.value,
-    count: 3,
+    name: locationTemplate,
+    count: 10,
     language: "en",
     format: "json",
   },
   transform: (resp: any) => toRaw(resp).results,
+  watch: [locationTemplate],
 });
+
+emit("response", selectedLocation);
 </script>
 
 <template>
