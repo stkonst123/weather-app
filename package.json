@@ -19,7 +19,10 @@
     "vue3-apexcharts": "^1.5.2"
   },
   "devDependencies": {
+    "@nuxt/types": "^2.17.3",
+    "@nuxt/typescript-build": "^3.0.2",
     "nuxt-quasar-ui": "^2.0.8",
-    "sass": "^1.74.1"
+    "sass": "^1.74.1",
+    "typescript": "^5.4.4"
   }
 }
