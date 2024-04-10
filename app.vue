@@ -2,8 +2,11 @@
 const locationTemplate = useState<string | null>("locationTemplate", () => null);
 const locationTemplateTmp = useState<string | null>("locationTemplateTmp", () => null);
 const selectedLocation = useState<LocationData | null>("selectedLocation");
-const dateRange = useState<DataRange | null>("dateRange", () => null);
-const proxyDateRange = useState<DataRange | null>("proxyDateRange", () => null);
+const dateRange = useState<DataRange | string | null>("dateRange", () => null);
+const proxyDateRange = useState<DataRange | string | null>("proxyDateRange", () => null);
+const dateRangeFrom = useState<string | null>("dateRangeFrom", () => null);
+const dateRangeTo = useState<string | null>("dateRangeTo", () => null);
+const errorMessage = useState<string | null>("errorMessage", () => null);
 
 function updateProxyDateRange() {
   proxyDateRange.value = dateRange.value;
@@ -19,6 +22,23 @@ function clearLocationTemplate() {
   selectedLocation.value = null;
   dateRange.value = null;
 }
+
+watch(dateRange, () => {
+  if (!dateRange.value) {
+    dateRangeFrom.value = null;
+    dateRangeTo.value = null;
+    return;
+  }
+
+  if (typeof dateRange.value === "string") {
+    dateRangeFrom.value = dateRange.value.replaceAll("/", "-");
+    dateRangeTo.value = dateRange.value.replaceAll("/", "-");
+    return;
+  }
+
+  dateRangeFrom.value = dateRange.value.from.replaceAll("/", "-");
+  dateRangeTo.value = dateRange.value.to.replaceAll("/", "-");
+});
 </script>
 
 <template>
@@ -41,11 +61,7 @@ function clearLocationTemplate() {
         </template>
       </q-input>
 
-      <LocationsView
-        v-if="locationTemplate"
-        :locationTemplate="locationTemplate"
-        @response="(selectedLocation) => (selectedLocation = selectedLocation)"
-      />
+      <LocationsView v-if="locationTemplate" />
 
       <q-separator v-if="selectedLocation" style="width: 100%; margin: 5px 0" />
 
@@ -68,15 +84,22 @@ function clearLocationTemplate() {
         </q-popup-proxy>
         <div v-if="dateRange" class="text-h5">
           <span class="text-caption">From </span>
-          {{ dateRange.from }}
+          {{ dateRangeFrom.replaceAll("-", ".") }}
           <span class="text-caption">to </span>
-          {{ dateRange.to }}
+          {{ dateRangeTo.replaceAll("-", ".") }}
         </div>
       </q-btn>
 
-      <TemperatureView v-if="dateRange" :selectedLocation="selectedLocation" />
+      <TemperatureView v-if="selectedLocation && dateRange" />
     </div>
   </div>
+
+  <!-- <NuxtErrorBoundary @error="errorMessage">
+    <template #error="{ error, clearError }">
+      You can display the error locally here: {{ error }}
+      <button @click="clearError">This will clear the error.</button>
+    </template>
+  </NuxtErrorBoundary> -->
 
   <!-- <div class="error-message" v-if="showError">{{ errorMessage }}</div> -->
 </template>

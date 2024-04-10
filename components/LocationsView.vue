@@ -1,11 +1,6 @@
 <script setup lang="ts">
-const props = defineProps({
-  locationTemplate: String,
-});
-const emit = defineEmits(["response"]);
-
 const selectedLocation = useState<LocationData | null>("selectedLocation", () => null);
-const locationTemplate = useState("locationTemplate", () => props.locationTemplate);
+const locationTemplate = useState("locationTemplate");
 const latitude = useState<number | null>("latitude", () => null);
 const longitude = useState<number | null>("longitude", () => null);
 
@@ -24,8 +19,6 @@ watch(selectedLocation, () => {
   latitude.value = selectedLocation.value ? selectedLocation.value.latitude : null;
   longitude.value = selectedLocation.value ? selectedLocation.value.longitude : null;
 });
-
-emit("response", selectedLocation);
 </script>
 
 <template>
