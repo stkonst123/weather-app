@@ -6,7 +6,6 @@ const dateRange = useState<DataRange | string | null>("dateRange", () => null);
 const proxyDateRange = useState<DataRange | string | null>("proxyDateRange", () => null);
 const dateRangeFrom = useState<string | null>("dateRangeFrom", () => null);
 const dateRangeTo = useState<string | null>("dateRangeTo", () => null);
-const errorMessage = useState<string | null>("errorMessage", () => null);
 
 function updateProxyDateRange() {
   proxyDateRange.value = dateRange.value;
@@ -21,6 +20,16 @@ function clearLocationTemplate() {
   locationTemplateTmp.value = null;
   selectedLocation.value = null;
   dateRange.value = null;
+}
+
+function dateLimitTwoWeeks(date: DataRange | string) {
+  const limitDate = getTwoWeeksDate(new Date());
+
+  if (typeof date === "string") {
+    return date <= limitDate;
+  }
+
+  return date.from <= limitDate && date.to <= limitDate;
 }
 
 watch(dateRange, () => {
@@ -75,7 +84,7 @@ watch(dateRange, () => {
         style="margin-bottom: 10px; font-size: 18px"
       >
         <q-popup-proxy @before-show="updateProxyDateRange" transition-show="fade" transition-hide="fade">
-          <q-date range v-model="proxyDateRange">
+          <q-date range v-model="proxyDateRange" :options="dateLimitTwoWeeks">
             <div class="row items-center justify-end q-gutter-sm">
               <q-btn label="Cancel" color="primary" flat v-close-popup />
               <q-btn label="OK" color="primary" flat @click="saveDateRange" v-close-popup />
@@ -93,13 +102,4 @@ watch(dateRange, () => {
       <TemperatureView v-if="selectedLocation && dateRange" />
     </div>
   </div>
-
-  <!-- <NuxtErrorBoundary @error="errorMessage">
-    <template #error="{ error, clearError }">
-      You can display the error locally here: {{ error }}
-      <button @click="clearError">This will clear the error.</button>
-    </template>
-  </NuxtErrorBoundary> -->
-
-  <!-- <div class="error-message" v-if="showError">{{ errorMessage }}</div> -->
 </template>

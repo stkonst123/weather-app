@@ -6,7 +6,6 @@ const dateRangeFrom = useState<string>("dateRangeFrom");
 const dateRangeTo = useState<string>("dateRangeTo");
 const series = useState("series");
 const chartOptions = useState("chartOptions");
-const errorMessage = useState<string>("errorMessage");
 
 const {
   data: temperatureData,
@@ -25,12 +24,11 @@ const {
   watch: [latitude, longitude, dateRangeFrom, dateRangeTo],
 });
 
-watch(temperatureData, () => {
-  if (temperatureData.value.error) {
-    alert(temperatureData.value.error);
-    return;
-  }
+watch(error, () => {
+  console.log(error.value);
+});
 
+watch(temperatureData, () => {
   series.value = [
     {
       name: "t, " + temperatureData.value.hourly_units.temperature_2m,
@@ -66,12 +64,6 @@ watch(temperatureData, () => {
       },
     },
   };
-});
-
-watch(error, () => {
-  if (error.value) {
-    errorMessage.value = error.value.message;
-  }
 });
 </script>
 
