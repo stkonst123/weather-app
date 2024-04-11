@@ -22,8 +22,8 @@ watch(selectedLocation, () => {
 </script>
 
 <template>
-  <div v-if="locations" class="col-xs-12 col-sm-4 col-md-3">
-    <q-scroll-area class="cards-container">
+  <div v-if="locations" :class="selectedLocation ? 'col-xs-12 col-sm-4 col-md-3' : 'col-12'">
+    <q-scroll-area :class="selectedLocation ? 'cards-container' : 'cards-container-full-lenght'">
       <q-list>
         <q-item
           v-for="item in locations"
@@ -32,10 +32,9 @@ watch(selectedLocation, () => {
           :class="selectedLocation?.id === item?.id && 'selected-card'"
         >
           <q-item-section @click="selectedLocation = item">
-            <q-item-label
-              ><span class="text-weight-bolder">{{ item.name }}</span
-              >, {{ item.country }}</q-item-label
-            >
+            <q-item-label>
+              <span class="text-weight-bolder"> {{ item.name }} </span>, {{ item.country }}
+            </q-item-label>
             <q-item-label v-if="item.population" caption style="margin-bottom: 3px"
               >Population: {{ item.population }}</q-item-label
             >
@@ -48,12 +47,12 @@ watch(selectedLocation, () => {
     </q-scroll-area>
   </div>
 
-  <div v-if="locations" class="col-xs-12 col-sm-8 col-md-9">
+  <div v-if="selectedLocation" class="col-xs-12 col-sm-8 col-md-9">
     <div class="map-container">
       <div style="width: 100%; height: 100%; background-color: purple">
         <h2 style="padding: 0; margin: 0">Map view is under development</h2>
 
-        <div v-if="selectedLocation" class="temperature-container">
+        <div class="temperature-container">
           <CurrentTemperature />
         </div>
       </div>
@@ -64,6 +63,10 @@ watch(selectedLocation, () => {
 <style>
 .cards-container {
   height: 400px;
+}
+
+.cards-container-full-lenght {
+  height: calc(100vh - 82px);
 }
 
 .location-card {
@@ -96,7 +99,7 @@ watch(selectedLocation, () => {
 
 @media (width <= 600px) {
   .cards-container {
-    max-height: 150px;
+    height: 150px;
   }
 
   .map-container {
