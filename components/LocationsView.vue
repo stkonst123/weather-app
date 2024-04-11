@@ -56,12 +56,10 @@ watch(selectedLocation, () => {
 
   <div v-if="selectedLocation" class="col-xs-12 col-sm-8 col-md-9">
     <div class="map-container">
-      <div style="width: 100%; height: 100%; background-color: purple">
-        <h2 style="padding: 0; margin: 0">Map view is under development</h2>
+      <Map />
 
-        <div class="temperature-container">
-          <CurrentTemperature />
-        </div>
+      <div class="temperature-container">
+        <CurrentTemperature />
       </div>
     </div>
   </div>

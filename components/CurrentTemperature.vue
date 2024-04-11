@@ -26,22 +26,24 @@ watch(currentTemperature, () => {
 </script>
 
 <template>
-  <q-knob
-    v-if="!pending"
-    :min="0"
-    :max="50"
-    :thickness="0.05"
-    :color="isMinus ? 'primary' : 'orange'"
-    :track-color="isMinus ? 'grey-2' : 'orange-2'"
-    :class="isMinus ? 'text-primary' : 'text-orange'"
-    v-model="displayedTemperature"
-    size="120px"
-    readonly
-    show-value
-  >
-    <span class="temperature-value">{{ displayedTemperature }}</span>
-    <span class="temperature-mark">°C</span>
-  </q-knob>
+  <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+    <q-knob
+      v-if="!pending"
+      :min="0"
+      :max="50"
+      :thickness="0.05"
+      :color="isMinus ? 'blue-10' : 'orange-10'"
+      :track-color="isMinus ? 'blue-grey-3' : 'orange-2'"
+      :class="isMinus ? 'text-blue-10' : 'text-orange-10'"
+      v-model="displayedTemperature"
+      size="120px"
+      readonly
+      show-value
+    >
+      <span class="temperature-value">{{ displayedTemperature }}</span>
+      <span class="temperature-mark">°C</span>
+    </q-knob>
+  </transition>
 </template>
 
 <style>
@@ -51,5 +53,10 @@ watch(currentTemperature, () => {
 
 .temperature-mark {
   font-size: 32px;
+}
+
+.brand {
+  color: #a2aa33 !important;
+  background: #a2aa33 !important;
 }
 </style>
