@@ -4,7 +4,7 @@ const locationTemplate = useState("locationTemplate");
 const latitude = useState<number | null>("latitude", () => null);
 const longitude = useState<number | null>("longitude", () => null);
 
-const { data: locations } = await useLazyFetch("https://geocoding-api.open-meteo.com/v1/search", {
+const { data: locations, pending } = await useLazyFetch("https://geocoding-api.open-meteo.com/v1/search", {
   query: {
     name: locationTemplate,
     count: 10,
@@ -45,6 +45,13 @@ watch(selectedLocation, () => {
         </q-item>
       </q-list>
     </q-scroll-area>
+  </div>
+
+  <div v-else-if="!pending" class="col-12 row justify-center" style="margin-top: 10px">
+    <q-item-label class="col-12 text-h4 text-weight-bold text-orange text-center">No results</q-item-label>
+    <q-item-label class="col-12 text-overline text-weight-bold text-primary text-center"
+      >try to specify the request</q-item-label
+    >
   </div>
 
   <div v-if="selectedLocation" class="col-xs-12 col-sm-8 col-md-9">
