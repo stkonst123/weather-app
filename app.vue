@@ -6,6 +6,7 @@ const dateRange = useState<DataRange | string | null>("dateRange", () => null);
 const proxyDateRange = useState<DataRange | string | null>("proxyDateRange", () => null);
 const dateRangeFrom = useState<string | null>("dateRangeFrom", () => null);
 const dateRangeTo = useState<string | null>("dateRangeTo", () => null);
+const inputRef = useState<HTMLElement | null>("inputRef", () => null);
 
 function updateProxyDateRange() {
   proxyDateRange.value = dateRange.value;
@@ -48,12 +49,21 @@ watch(dateRange, () => {
   dateRangeFrom.value = dateRange.value.from.replaceAll("/", "-");
   dateRangeTo.value = dateRange.value.to.replaceAll("/", "-");
 });
+
+const focusInput = () => {
+  if (inputRef.value) {
+    inputRef.value.focus();
+  }
+};
+
+onMounted(focusInput);
 </script>
 
 <template>
   <div class="row" style="height: 100vh; justify-content: center; align-items: center; overflow-x: hidden">
     <div class="row col-12" style="padding: 10px; min-width: 350px; max-width: 900px">
       <q-input
+        ref="inputRef"
         class="col-12"
         v-model="locationTemplateTmp"
         label="City name or Location key word"
