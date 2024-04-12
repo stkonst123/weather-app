@@ -1,75 +1,22 @@
-# Nuxt 3 Minimal Starter
+# WeatherApp
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+### The application to check the air temperature of any location on the Earth.
+It displays the list of appropriate location, current temperature for chosen location and hourly temperature of selected range of dates.
 
-## Setup
+The application utilize the data from [open-meteo.com](https://open-meteo.com)
 
-Make sure to install the dependencies:
+To get started first of all please type desired location name. If there are some appropriate results, chose the most suitable one. Otherwise, try to specify your request.
 
-```bash
-# npm
-npm install
+<img src="img/img1.png" width=250 />
+<img src="img/img3.png" width=250 />
 
-# pnpm
-pnpm install
+When you select a specific location, it will be shown on the map and the current temperature will be displayed on the map as well.
+There are no plus or minus signs; instead, it is highlighted in color - orange for positive temperatures and minus for negative temperatures. The temperature value is measured in degrees Celsius.
 
-# yarn
-yarn install
+<img src="img/img4.png" width=250 />
+<img src="img/img8.png" width=250 />
 
-# bun
-bun install
-```
+For more detailed information please select a required diapason of dates:
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+<img src="img/img6.png" width=250 />
+<img src="img/img7.png" width=250 />
