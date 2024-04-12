@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { scroll } from "quasar";
+const { getScrollTarget, setVerticalScrollPosition } = scroll;
+
 const locationTemplate = useState<string | null>("locationTemplate", () => null);
 const locationTemplateTmp = useState<string | null>("locationTemplateTmp", () => null);
 const selectedLocation = useState<LocationData | null>("selectedLocation");
@@ -7,6 +10,7 @@ const proxyDateRange = useState<DataRange | string | null>("proxyDateRange", () 
 const dateRangeFrom = useState<string | null>("dateRangeFrom", () => null);
 const dateRangeTo = useState<string | null>("dateRangeTo", () => null);
 const inputRef = useState<HTMLElement | null>("inputRef", () => null);
+const chartRef = useState<HTMLElement | null>("chartRef", () => null);
 
 function updateProxyDateRange() {
   proxyDateRange.value = dateRange.value;
@@ -14,6 +18,15 @@ function updateProxyDateRange() {
 
 function saveDateRange() {
   dateRange.value = proxyDateRange.value;
+
+  setTimeout(() => {
+    if (chartRef.value) {
+      const target = getScrollTarget(chartRef.value);
+      const offset = chartRef.value.offsetTop;
+      const duration = 200;
+      setVerticalScrollPosition(target, offset, duration);
+    }
+  }, 500);
 }
 
 function clearLocationTemplate() {
@@ -60,7 +73,7 @@ onMounted(focusInput);
 </script>
 
 <template>
-  <div class="row" style="height: 100vh; justify-content: center; align-items: center; overflow-x: hidden">
+  <div class="row scroll" style="height: 100vh; justify-content: center; align-items: center; overflow-x: hidden">
     <div class="row col-12" style="padding: 10px; min-width: 350px; max-width: 900px">
       <q-input
         ref="inputRef"
@@ -109,7 +122,9 @@ onMounted(focusInput);
         </div>
       </q-btn>
 
-      <TemperatureView v-if="selectedLocation && dateRange" />
+      <div ref="chartRef" class="col-12" id="chart">
+        <TemperatureView v-if="selectedLocation && dateRange" />
+      </div>
     </div>
   </div>
 </template>

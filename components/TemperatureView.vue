@@ -69,20 +69,18 @@ watch(temperatureData, () => {
 
 <template>
   <ClientOnly v-if="!pending">
-    <div class="col-12" id="chart">
-      <apexchart
-        type="line"
-        height="350"
-        :options="{
-          ...chartOptions,
-          title: {
-            text: `${selectedLocation.name}, ${selectedLocation.country}`,
-            align: 'center',
-            style: { fontSize: 18 },
-          },
-        }"
-        :series="series"
-      ></apexchart>
-    </div>
+    <apexchart
+      type="line"
+      height="350"
+      :options="{
+        ...chartOptions,
+        title: {
+          text: `${selectedLocation.name}, ${selectedLocation.country}`,
+          align: 'center',
+          style: { fontSize: 18 },
+        },
+      }"
+      :series="series"
+    ></apexchart>
   </ClientOnly>
 </template>
