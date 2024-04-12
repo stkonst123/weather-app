@@ -23,7 +23,7 @@ function saveDateRange() {
     if (chartRef.value) {
       const target = getScrollTarget(chartRef.value);
       const offset = chartRef.value.offsetTop;
-      const duration = 200;
+      const duration = 500;
       setVerticalScrollPosition(target, offset, duration);
     }
   }, 500);
@@ -120,6 +120,7 @@ onMounted(focusInput);
           <span class="text-caption">to </span>
           {{ dateRangeTo.replaceAll("-", ".") }}
         </div>
+        <span v-else class="text-h6">Please select a date</span>
       </q-btn>
 
       <div ref="chartRef" class="col-12" id="chart">
