@@ -3,6 +3,8 @@ const selectedLocation = useState<LocationData | null>("selectedLocation", () =>
 const locationTemplate = useState("locationTemplate");
 const latitude = useState<number | null>("latitude", () => null);
 const longitude = useState<number | null>("longitude", () => null);
+const scrollRef = useState<HTMLElement | null>("scrollRef", () => null);
+const focusItemRef = useState<HTMLElement | null>("focusItemRef", () => null);
 
 const { data: locations, pending } = await useLazyFetch("https://geocoding-api.open-meteo.com/v1/search", {
   query: {
@@ -18,6 +20,12 @@ const { data: locations, pending } = await useLazyFetch("https://geocoding-api.o
 watch(selectedLocation, () => {
   latitude.value = selectedLocation.value ? selectedLocation.value.latitude : null;
   longitude.value = selectedLocation.value ? selectedLocation.value.longitude : null;
+
+  console.log(focusItemRef.value);
+});
+
+watch(focusItemRef, () => {
+  console.log(focusItemRef.value);
 });
 </script>
 
@@ -26,12 +34,14 @@ watch(selectedLocation, () => {
     <q-scroll-area :class="selectedLocation ? 'cards-container' : 'cards-container-full-lenght'">
       <q-list>
         <q-item
+          clickable
           v-for="item in locations"
           :key="item.id"
+          @click.capture="selectedLocation = item"
           class="location-card"
           :class="selectedLocation?.id === item?.id && 'selected-card'"
         >
-          <q-item-section @click="selectedLocation = item">
+          <q-item-section>
             <q-item-label>
               <span class="text-weight-bolder"> {{ item.name }} </span>, {{ item.country }}
             </q-item-label>

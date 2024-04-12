@@ -53,6 +53,6 @@ const rotation = ref(0);
   translate: -15px -15px;
   border-radius: 50%;
   background-color: orange;
-  box-shadow: 0 0 5px 1px black;
+  box-shadow: 0 0 10px 1px dimgray;
 }
 </style>
